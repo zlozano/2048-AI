@@ -3,7 +3,7 @@ from BaseAI_3 import BaseAI
 from Grid_3 import Grid
 import time
 
-time_limit = 0.7  # IDDFS for .7 seconds
+time_limit = 0.03  # IDDFS for .7 seconds
 
 class PlayerAI(BaseAI):
 
@@ -20,7 +20,6 @@ class PlayerAI(BaseAI):
         depth = 1
         start = time.clock()
         while time.clock() - start < time_limit:
-            print('exploring depth: ' + str(depth))
             (value, move) = self.maximizing(-math.inf, math.inf, node, depth)
             maximizing_value = max(maximizing_value, value)
             maximizing_move = move if value == maximizing_value else move
@@ -33,7 +32,7 @@ class PlayerAI(BaseAI):
     def maximizing(self, alpha, beta, node: Grid, depth):
         maximizing_move = None
         if depth == 0:
-            return self.maximizing_heuristic(node), maximizing_move
+            return self.heuristic(node), maximizing_move
 
         moves = node.getAvailableMoves()
         if not moves:
@@ -56,7 +55,7 @@ class PlayerAI(BaseAI):
     """
     def minimizing(self, alpha, beta, node: Grid, depth):
         if depth == 0:
-            return self.minimizing_heuristic(node)
+            return self.heuristic(node)
 
         cells = node.getAvailableCells()
         if not cells:
@@ -76,14 +75,24 @@ class PlayerAI(BaseAI):
     """
     Maximizing heuristic function for non-terminal nodes
     """
-    def maximizing_heuristic(self, node: Grid):
-        return 0
+    @staticmethod
+    def heuristic(node: Grid):
+        score = 0
+        for row in node.map:
+            for i in range(1, len(row) - 1):
+                if row[i - 1] <= row[i] <= row[i + 1]:
+                    score += 1
+                elif row[i - 1] >= row[i] >= row[i + 1]:
+                    score += 1
 
-    """
-    Maximizing heuristic function for non-terminal nodes
-    """
-    def minimizing_heuristic(self, node: Grid):
-        return 0
+        for j in range(node.size):
+            for i in range(1, len(node.map) - 1):
+                if node.map[i - 1][j] < node.map[i][j] < node.map[i + 1][j]:
+                    score += 1
+                elif node.map[i - 1][j] > node.map[i][j] > node.map[i + 1][j]:
+                    score += 1
+
+        return score
 
     """
     Determine if a losing state has been found or a winning state.
