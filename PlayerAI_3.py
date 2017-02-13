@@ -3,7 +3,7 @@ from BaseAI_3 import BaseAI
 from Grid_3 import Grid
 import time
 
-time_limit = 0.03  # IDDFS for .7 seconds
+time_limit = 0.025
 
 class PlayerAI(BaseAI):
 
@@ -91,6 +91,12 @@ class PlayerAI(BaseAI):
                     score += 1
                 elif node.map[i - 1][j] > node.map[i][j] > node.map[i + 1][j]:
                     score += 1
+
+        for row in node.map:
+            for val in row:
+                score += val
+                if val == 0:
+                    score += 2
 
         return score
 
