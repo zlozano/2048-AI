@@ -3,7 +3,7 @@ from BaseAI_3 import BaseAI
 from Grid_3 import Grid
 import time
 
-time_limit = 0.025
+time_limit = 0.02
 
 class PlayerAI(BaseAI):
 
@@ -81,11 +81,11 @@ class PlayerAI(BaseAI):
         for row in node.map:
             for i in range(1, len(row) - 1):
                 if row[i - 1] <= row[i] <= row[i + 1]:
-                    score += 1
+                    score += 2
                 elif row[i - 1] >= row[i] >= row[i + 1]:
-                    score += 1
+                    score += 2
                 else:
-                    score -= 1
+                    score -= 5
 
         for j in range(node.size):
             for i in range(1, len(node.map) - 1):
@@ -98,7 +98,7 @@ class PlayerAI(BaseAI):
             for val in row:
                 score += val
                 if val == 0:
-                    score += 4
+                    score += 10
 
         return score
 
