@@ -84,6 +84,8 @@ class PlayerAI(BaseAI):
                     score += 1
                 elif row[i - 1] >= row[i] >= row[i + 1]:
                     score += 1
+                else:
+                    score -= 1
 
         for j in range(node.size):
             for i in range(1, len(node.map) - 1):
@@ -96,7 +98,7 @@ class PlayerAI(BaseAI):
             for val in row:
                 score += val
                 if val == 0:
-                    score += 2
+                    score += 4
 
         return score
 
