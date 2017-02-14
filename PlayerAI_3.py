@@ -19,7 +19,7 @@ class PlayerAI(BaseAI):
         maximizing_move = None
         depth = 1
         start = time.clock()
-        while time.clock() - start < time_limit:
+        while time.clock() - start < time_limit and depth < 4:
             (value, move) = self.maximizing(-math.inf, math.inf, node, depth)
             maximizing_value = max(maximizing_value, value)
             maximizing_move = move if value == maximizing_value else move
@@ -78,27 +78,44 @@ class PlayerAI(BaseAI):
     @staticmethod
     def heuristic(node: Grid):
         score = 0
+
+        # award monotonic sequences among rows
         for row in node.map:
-            for i in range(1, len(row) - 1):
-                if row[i - 1] <= row[i] <= row[i + 1]:
-                    score += 2
-                elif row[i - 1] >= row[i] >= row[i + 1]:
-                    score += 2
-                else:
-                    score -= 5
+            for i in range(1, len(row)):
+                if i < len(row) - 1:
+                    if row[i - 1] <= row[i] <= row[i + 1]:
+                        score += 900
+                    elif row[i - 1] >= row[i] >= row[i + 1]:
+                        score += 900
+                    else:
+                        score -= 100000
+                if row[i] != 0 and row[i - 1] != 0:
+                    score -= abs(row[i] - row[i - 1]) * 1000
 
+        # award monotonic sequences among columns
         for j in range(node.size):
-            for i in range(1, len(node.map) - 1):
-                if node.map[i - 1][j] < node.map[i][j] < node.map[i + 1][j]:
-                    score += 1
-                elif node.map[i - 1][j] > node.map[i][j] > node.map[i + 1][j]:
-                    score += 1
+            for i in range(1, len(node.map)):
+                if i < len(node.map) - 1:
+                    if node.map[i - 1][j] <= node.map[i][j] <= node.map[i + 1][j]:
+                        score += 900
+                    elif node.map[i - 1][j] >= node.map[i][j] >= node.map[i + 1][j]:
+                        score += 900
+                    else:
+                        score -= 100000
+                if node.map[i][j] != 0 and node.map[i - 1][j] != 0:
+                    score -= abs(node.map[i][j] - node.map[i - 1][j]) * 1000
 
+        # maximize board real estate (as many high value cells with maximum empty cells
         for row in node.map:
             for val in row:
-                score += val
                 if val == 0:
-                    score += 10
+                    score += 30000
+                elif val == 2 or val == 4:
+                    score -= 8000
+                elif val >= 128:
+                    score += val * 10000
+                elif val >= 32:
+                    score += val * 100
 
         return score
 
