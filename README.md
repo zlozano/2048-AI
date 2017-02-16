@@ -3,6 +3,8 @@ AI agent to solve 2048 puzzle
 
 The model and main application were taken from a course at Columbia University.  I implemented `PlayerAI_3.py`.
 
+As of 2/16, my heuristic achieves around a 50% success rate (hitting the goal of 2048).
+
 # Implementation
 
 The implementation used is a [minimax](https://en.wikipedia.org/wiki/Minimax) algorithm with [alpha-beta pruning](https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning).
